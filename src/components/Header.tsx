@@ -23,7 +23,7 @@ function Header()
                             <li className='hover:text-white transition ease-in-out duration-300'>
                                 <NavLink 
                                     to={l.to} 
-                                    className={({ isActive }) => (isActive ? 'inline-block scale-110 text-white underline underline-offset-8 decoration-[#22d3ee]' : '')}
+                                    className={({ isActive }) => (isActive ? 'inline-block scale-110 text-white underline underline-offset-8 decoration-[#22d3ee]' : 'inline-block hover:scale-105')}
                                     >
                                     {l.name}
                                 </NavLink>
