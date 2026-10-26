@@ -13,7 +13,7 @@ function Header()
     return (
         <header className="bg-[#0b1120] text-white flex justify-between px-15 py-5">
             <NavLink to="/">
-                <h2 className="cursor-pointer text-[#22d3ee] text-2xl font-bold "><span>🌐 </span>Explorador</h2>
+                <h2 className="will-change-transform hover:scale-102 transition duration-200 ease-in-out cursor-pointer text-[#22d3ee] text-2xl font-bold "><span>🌐 </span>Explorador</h2>
             </NavLink>
 
             <nav>

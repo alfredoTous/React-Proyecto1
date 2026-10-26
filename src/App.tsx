@@ -3,6 +3,7 @@ import Inicio from "./pages/Inicio"
 import Footer from "./components/Footer"
 
 import { Routes, Route } from 'react-router';
+import Explorar from "./pages/Explorar";
 
 function App() {
     return (
@@ -10,7 +11,8 @@ function App() {
             <Header/>
 
             <Routes>
-                <Route path="/" element={<Inicio/>}/>
+                <Route path="/"         element={<Inicio/>}/>
+                <Route path="/explorar" element={<Explorar/>}/>
             </Routes>
 
             <Footer/>
