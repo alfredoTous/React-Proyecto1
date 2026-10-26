@@ -1,8 +1,13 @@
+import { Link } from 'react-router'
 
 function Footer()
 {
     return (
-        <h2>FOOTER</h2>
+        <div className="flex justify-center bg-[#111] text-[#747674]">
+            <p>
+                © 2026 <Link to="/">Explorador</Link>
+            </p>
+        </div>
     )
 }
 
