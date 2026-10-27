@@ -5,12 +5,14 @@ import { useSearchParams } from 'react-router';
 import { GetCharacters } from '../api.ts';
 
 import type { Character } from '../types/character.ts';
+import type { ApiInfo } from '../types/apiInfo.ts';
 
 function Explorar()
 {
 
     const [searchParams, setSearchParams] = useSearchParams();
     const [characters, setCharacters] = useState<Character[]>([]);
+    const [apiInfo, setApiInfo] = useState<ApiInfo>();
     const [loadedApiPages, setLoadedApiPages] = useState(0);
     
     const page : number = parseInt(searchParams.get("page") || "1");
@@ -21,12 +23,18 @@ function Explorar()
 
     useEffect(() => {
         async function loadCharacters(loadedApiPages: number) {
-            let data = await GetCharacters(loadedApiPages);
-            setCharacters(prev => [...prev, ...data.results]);
+            try {
+                let data = await GetCharacters(loadedApiPages);
+                setApiInfo({count: parseInt(data.info.count), pages: parseInt(data.info.pages)});
+                setCharacters(prev => [...prev, ...data.results]);
+            } catch (error) {
+                console.error(error);
+            }
         }
 
         if (page*9 > characters.length) {
             const nextPage = loadedApiPages+1
+            if (apiInfo && nextPage > apiInfo.pages) return;
             setLoadedApiPages(nextPage);
             loadCharacters(nextPage);
         }
@@ -58,7 +66,7 @@ function Explorar()
             <section className='bg-[#eaeaea] p-10'>
                 <div className='flex justify-between'>
                     <h3 className='text-[#0f172a] font-semibold text-xl pb-10'>Resultados</h3>
-                    <p className='text-[#758498]'>Mostrando {`${pageMin+1}-${pageMax}`} de {826} resultados</p>
+                    <p className='text-[#758498]'>Mostrando {`${pageMin+1}-${pageMax}`} de {apiInfo?.count} resultados</p>
                 </div>
                 <div className='flex flex-col items-center'>
                     <div className='grid grid-cols-3 gap-12'>
