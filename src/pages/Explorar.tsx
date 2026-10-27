@@ -3,9 +3,11 @@ import Card from '../components/Card.tsx'
 
 import { useSearchParams } from 'react-router';
 import { GetCharacters } from '../api.ts';
+import Pagination from '../components/Pagination.tsx'
 
 import type { Character } from '../types/character.ts';
 import type { ApiInfo } from '../types/apiInfo.ts';
+import type { PaginationInfo } from '../types/paginationInfo.ts';
 
 function Explorar()
 {
@@ -22,6 +24,19 @@ function Explorar()
    
     const totalPages        : number   = apiInfo==null ? 0 : Math.ceil(apiInfo.count/9);
     const paginationButtons : number[] = apiInfo==null ? [] : Array.from({length: totalPages}, (_,i)=>i+1);
+    
+    const start = Math.max(0, Math.min(page - 3, totalPages - 5));
+    const end = Math.min(start + 5, totalPages);
+
+
+    const paginationInfo : PaginationInfo = {
+        page              : page,
+        setSearchParams   : setSearchParams,
+        totalPages        : totalPages,
+        start             : start,
+        end               : end,
+        paginationButtons : paginationButtons
+    }
 
     useEffect(() => {
         async function loadCharacters(loadedApiPages: number) {
@@ -68,7 +83,7 @@ function Explorar()
             <section className='bg-[#eaeaea] p-10'>
                 <div className='flex justify-between'>
                     <h3 className='text-[#0f172a] font-semibold text-xl pb-10'>Resultados</h3>
-                    <p className='text-[#758498]'>Mostrando {`${pageMin+1}-${pageMax}`} de {apiInfo?.count} resultados</p>
+                    <p className='text-[#758498]'>Mostrando {`${pageMin+1}-${page==totalPages ? apiInfo?.count : pageMax}`} de {apiInfo?.count} resultados</p>
                 </div>
                 <div className='flex flex-col items-center'>
                     <div className='grid grid-cols-3 gap-12'>
@@ -79,29 +94,11 @@ function Explorar()
                         })}
                     </div>
                 </div>
+
                 <div className='mt-10 flex justify-center'>
-                    <ul className='flex items-center gap-3'>
-                        <li>
-                            <button 
-                                onClick={()=> setSearchParams({page: String(page-1)})} 
-                                className='text-2xl cursor-pointer'
-                                disabled={page<=1}
-                            >
-                                ◀
-                            </button>
-                        </li>
-                        numeros
-                        <li>
-                            <button
-                                onClick={() => setSearchParams({page: String(page+1)})}
-                                className='text-2xl cursor-pointer'
-                                disabled={page>=totalPages}
-                            >
-                                ▶
-                            </button>
-                        </li>
-                    </ul>
+                    <Pagination paginationInfo={paginationInfo}/>
                 </div>
+
             </section>
         </main>
     )
