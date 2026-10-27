@@ -20,7 +20,7 @@ function Header()
                 <ul className="flex gap-4 font-semibold text-[#86898a]">
                     {links.map(l => {
                         return (
-                            <li className='hover:text-white transition ease-in-out duration-300'>
+                            <li key={l.to} className='hover:text-white transition ease-in-out duration-300'>
                                 <NavLink 
                                     to={l.to} 
                                     className={({ isActive }) => (isActive ? 'hover:scale-115 inline-block scale-110 text-white underline underline-offset-8 decoration-[#22d3ee]' : 'inline-block hover:scale-105')}
