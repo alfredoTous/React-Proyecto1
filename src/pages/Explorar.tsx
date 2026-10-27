@@ -13,13 +13,15 @@ function Explorar()
     const [searchParams, setSearchParams] = useSearchParams();
     const [characters, setCharacters] = useState<Character[]>([]);
     const [apiInfo, setApiInfo] = useState<ApiInfo>();
-    const [loadedApiPages, setLoadedApiPages] = useState(0);
+    const [loadedApiPages, setLoadedApiPages] = useState<number>(0);
     
     const page : number = parseInt(searchParams.get("page") || "1");
 
-    const pageMin = (page-1)*9;
-    const pageMax = pageMin+9;
-
+    const pageMin : number = (page-1)*9;
+    const pageMax : number = pageMin+9;
+   
+    const totalPages        : number   = apiInfo==null ? 0 : Math.ceil(apiInfo.count/9);
+    const paginationButtons : number[] = apiInfo==null ? [] : Array.from({length: totalPages}, (_,i)=>i+1);
 
     useEffect(() => {
         async function loadCharacters(loadedApiPages: number) {
@@ -77,7 +79,29 @@ function Explorar()
                         })}
                     </div>
                 </div>
-                <div className='flex flex-col items-center mt-10'>1 2 3 4 5 6 7 8 9...273</div>
+                <div className='mt-10 flex justify-center'>
+                    <ul className='flex items-center gap-3'>
+                        <li>
+                            <button 
+                                onClick={()=> setSearchParams({page: String(page-1)})} 
+                                className='text-2xl cursor-pointer'
+                                disabled={page<=1}
+                            >
+                                ◀
+                            </button>
+                        </li>
+                        numeros
+                        <li>
+                            <button
+                                onClick={() => setSearchParams({page: String(page+1)})}
+                                className='text-2xl cursor-pointer'
+                                disabled={page>=totalPages}
+                            >
+                                ▶
+                            </button>
+                        </li>
+                    </ul>
+                </div>
             </section>
         </main>
     )
