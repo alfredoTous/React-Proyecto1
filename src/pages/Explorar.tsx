@@ -10,6 +10,8 @@ import type { PaginationInfo } from '../types/paginationInfo.ts';
 
 import Pagination from '../components/Pagination';
 
+// la idea es mostrar un componente de cargando si se filtra mientras todavia no estan todos los personajes
+
 function Explorar()
 {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -38,17 +40,26 @@ function Explorar()
         setCurrentApiPage(nextPage);
     }, [characters])
 
-    // Handle search
+    // Handle filters
     const [search, setSearch] = useState('');
-    const totalFilteredCharacters = search ? characters.filter((c) => c.name.toLowerCase().includes(search.toLowerCase())).length : 0;
+    const [status, setStatus] = useState('');
+    const hasFilters = search != '' || status != '';
+
     useEffect(() => {
         setSearchParams({page: '1'});
-    }, [search])
+    }, [search, status])
 
+
+    // Calculate characters
+    const filteredCharacters = characters.filter((c) => c.name.toLowerCase().includes(search.toLowerCase()) && (status == '' || c.status == status));
+    const totalFilteredCharacters = filteredCharacters.length;
 
 
     // === PAGINATION VARS ===
-    const totalPages : number = apiInfo==null ? 0 : search ? calculateTotalPagesWithFilter() : Math.ceil(apiInfo.count/9);
+    const totalPages : number = apiInfo==null ? 0 
+                                : hasFilters  ? Math.ceil(totalFilteredCharacters/cardsPerPage)
+                                              : Math.ceil(apiInfo.count/cardsPerPage);
+
     const paginationButtons : number[] = apiInfo==null ? [] : Array.from({length: totalPages}, (_,i)=>i+1);
 
     const paginationInfo : PaginationInfo = {
@@ -58,9 +69,6 @@ function Explorar()
         paginationButtons : paginationButtons
     }
     
-    function calculateTotalPagesWithFilter() {
-        return Math.ceil(totalFilteredCharacters/9);
-    }
 
     return (
         <main className="flex-1">
@@ -75,10 +83,11 @@ function Explorar()
                         <input onChange={(e)=>setSearch(e.target.value)} placeholder="Buscar personaje..." className="box-border p-3 w-75 rounded-l-lg h-11 placeholder:text-gray-400 bg-white"/>
                         <button className="flex items-center justify-center box-border p-3 rounded-r-lg w-20 h-11 bg-[#22d3ee]">Buscar</button>
                     </div>
-                    <select className="box-border h-11 p-3 rounded-lg bg-white">
-                        <option>Todos los estados</option>
-                        <option>Vivos</option>
-                        <option>Muertos</option>
+                    <select value={status} onChange={(e)=>setStatus(e.target.value)}className="box-border h-11 p-3 rounded-lg bg-white">
+                        <option value=''>Todos los estados</option>
+                        <option value='Alive'>Vivos</option>
+                        <option value='Dead'>Muertos</option>
+                        <option value='unknown'>Desconocido</option>
                     </select>
                 </div>
             </section>
@@ -97,13 +106,7 @@ function Explorar()
                 </div>
                 <div className='flex flex-col items-center'>
                     <div className='grid grid-cols-3 gap-12'>
-                        {search 
-                            ? characters.filter((c) => c.name.toLowerCase().includes(search.toLowerCase())).slice(pageMin, pageMax).map((c) => {
-                            return (
-                                <Card key={c.id} character={c} />
-                            )
-                        })
-                            : characters.slice(pageMin, pageMax).map((c) => {
+                        {(hasFilters ? filteredCharacters : characters).slice(pageMin, pageMax).map((c) => {
                                 return (
                                     <Card key={c.id} character={c} />
                                 )
@@ -121,4 +124,4 @@ function Explorar()
     )
 }
 
-export default Explorar
+export default Explorar;
