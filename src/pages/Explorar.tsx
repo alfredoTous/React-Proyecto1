@@ -40,7 +40,7 @@ function Explorar()
 
     // Handle search
     const [search, setSearch] = useState('');
-
+    const totalFilteredCharacters = search ? characters.filter((c) => c.name.toLowerCase().includes(search.toLowerCase())).length : 0;
     useEffect(() => {
         setSearchParams({page: '1'});
     }, [search])
@@ -48,20 +48,19 @@ function Explorar()
 
 
     // === PAGINATION VARS ===
-    const totalPages : number   = apiInfo==null ? 0 : Math.ceil(apiInfo.count/9);
-    const start = Math.max(0, Math.min(page - 3, totalPages - 5));
-    const end = Math.min(start + 5, totalPages);
+    const totalPages : number = apiInfo==null ? 0 : search ? calculateTotalPagesWithFilter() : Math.ceil(apiInfo.count/9);
     const paginationButtons : number[] = apiInfo==null ? [] : Array.from({length: totalPages}, (_,i)=>i+1);
 
     const paginationInfo : PaginationInfo = {
         page              : page,
         setSearchParams   : setSearchParams,
         totalPages        : totalPages,
-        start             : start,
-        end               : end,
         paginationButtons : paginationButtons
     }
-
+    
+    function calculateTotalPagesWithFilter() {
+        return Math.ceil(totalFilteredCharacters/9);
+    }
 
     return (
         <main className="flex-1">
@@ -87,7 +86,14 @@ function Explorar()
             <section className='bg-[#eaeaea] p-10'>
                 <div className='flex justify-between'>
                     <h3 className='text-[#0f172a] font-semibold text-xl pb-10'>Resultados</h3>
-                    <p className='text-[#758498]'>Mostrando {`${pageMin+1}-${pageMax} de ${apiInfo?.count} resultados`}</p>
+                    <p className='text-[#758498]'>
+                        Mostrando {
+                                apiInfo && (
+                                    search ? `${pageMin+1}-${pageMax>totalFilteredCharacters ? totalFilteredCharacters : pageMax} de ${totalFilteredCharacters} resultados`
+                                    : `${pageMin+1}-${apiInfo?.count<pageMax ? apiInfo?.count : pageMax } de ${apiInfo?.count} resultados`
+                                )
+                            }
+                    </p>
                 </div>
                 <div className='flex flex-col items-center'>
                     <div className='grid grid-cols-3 gap-12'>

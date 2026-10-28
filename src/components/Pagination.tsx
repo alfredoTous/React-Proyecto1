@@ -8,9 +8,10 @@ function Pagination({paginationInfo}: {paginationInfo: PaginationInfo})
     const page = paginationInfo.page;
     const setSearchParams = paginationInfo.setSearchParams;
     const totalPages = paginationInfo.totalPages
-    const start = paginationInfo.start;
-    const end = paginationInfo.end
     const paginationButtons = paginationInfo.paginationButtons;
+    
+    const start : number = Math.max(0, Math.min(page - 3, totalPages - 5));
+    const end   : number = Math.min(start + 5, totalPages);
 
     return (
         <ul className='flex items-center gap-2.5'>
