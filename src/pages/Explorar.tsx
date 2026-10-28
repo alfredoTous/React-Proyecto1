@@ -70,6 +70,20 @@ function Explorar()
     }
     
 
+    function loadFavoritos() : Character[] 
+    {
+        const data : string = localStorage.getItem('favoritos') || '[]';
+        return JSON.parse(data);
+    }
+
+    function saveToFavoritos(character: Character) {
+        const favoritos : Character[] = loadFavoritos();
+
+        favoritos.push(character);
+
+        localStorage.setItem('favoritos', JSON.stringify(favoritos));
+    }
+
     return (
         <main className="flex-1">
             <section className="flex flex-col items-center gap-7 bg-linear-to-b from-[#10182b] via-[#172239] to-[#1d2b45] text-white p-12 pb-20">
