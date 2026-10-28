@@ -79,11 +79,13 @@ function Explorar()
                 </div>
                 
                 <div className="flex gap-3 text-black">
-                    <div className="flex items-center">
-                        <input onChange={(e)=>setSearch(e.target.value)} placeholder="Buscar personaje..." className="box-border p-3 w-75 rounded-l-lg h-11 placeholder:text-gray-400 bg-white"/>
+                    <div className="will-change-transform hover:scale-103 transition ease-in-out duration-200 flex items-center">
+                        <input onChange={(e)=>setSearch(e.target.value)} placeholder="Buscar personaje..." 
+                               className="box-border p-3 w-75 rounded-l-lg h-11 placeholder:text-gray-400 bg-white"
+                        />
                         <button className="flex items-center justify-center box-border p-3 rounded-r-lg w-20 h-11 bg-[#22d3ee]">Buscar</button>
                     </div>
-                    <select value={status} onChange={(e)=>setStatus(e.target.value)}className="box-border h-11 p-3 rounded-lg bg-white">
+                    <select value={status} onChange={(e)=>setStatus(e.target.value)} className="hover:scale-101 hover:bg-gray-100 cursor-pointer box-border h-11 p-3 rounded-lg bg-white">
                         <option value=''>Todos los estados</option>
                         <option value='Alive'>Vivos</option>
                         <option value='Dead'>Muertos</option>
