@@ -1,14 +1,13 @@
 
-
 const main_url: string = "https://rickandmortyapi.com/api/character";
 
 export async function GetCharacters(page: number) {
-    const response = await fetch(`${main_url}?page=${page}`);
-
-    if (!response.ok) {
-        throw new Error(`Fetch to ?page=${page} failed`);
+    try {
+        let response = await fetch(`${main_url}?page=${page}`);
+        let data     = await response.json();
+        return data;
+    } catch (error) {
+        console.error(error);
     }
-
-    return await response.json();
 }
 

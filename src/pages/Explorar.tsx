@@ -1,63 +1,40 @@
 import { useEffect, useState } from 'react';
-import Card from '../components/Card.tsx'
 
+import Card from '../components/Card.tsx'
 import { useSearchParams } from 'react-router';
 import { GetCharacters } from '../api.ts';
-import Pagination from '../components/Pagination.tsx'
 
-import type { Character } from '../types/character.ts';
+import type {Character} from '../types/character'
 import type { ApiInfo } from '../types/apiInfo.ts';
-import type { PaginationInfo } from '../types/paginationInfo.ts';
 
 function Explorar()
 {
-
     const [searchParams, setSearchParams] = useSearchParams();
     const [characters, setCharacters] = useState<Character[]>([]);
-    const [apiInfo, setApiInfo] = useState<ApiInfo>();
-    const [loadedApiPages, setLoadedApiPages] = useState<number>(0);
+    const [apiInfo, setApiInfo]       = useState<ApiInfo>();
+    const [currentApiPage, setCurrentApiPage] = useState(1);
+
+    const page : number = parseInt(searchParams.get('page') || '1');
+
+    const cardsPerPage = 9;
+    const pageMin : number = (page-1)*cardsPerPage;
+    const pageMax : number = pageMin+cardsPerPage;
+
     
-    const page : number = parseInt(searchParams.get("page") || "1");
-
-    const pageMin : number = (page-1)*9;
-    const pageMax : number = pageMin+9;
-   
-    const totalPages        : number   = apiInfo==null ? 0 : Math.ceil(apiInfo.count/9);
-    const paginationButtons : number[] = apiInfo==null ? [] : Array.from({length: totalPages}, (_,i)=>i+1);
-    
-    const start = Math.max(0, Math.min(page - 3, totalPages - 5));
-    const end = Math.min(start + 5, totalPages);
-
-
-    const paginationInfo : PaginationInfo = {
-        page              : page,
-        setSearchParams   : setSearchParams,
-        totalPages        : totalPages,
-        start             : start,
-        end               : end,
-        paginationButtons : paginationButtons
-    }
-
+    // Get all characters page by page and save them on memory
     useEffect(() => {
-        async function loadCharacters(loadedApiPages: number) {
-            try {
-                let data = await GetCharacters(loadedApiPages);
-                setApiInfo({count: parseInt(data.info.count), pages: parseInt(data.info.pages)});
-                setCharacters(prev => [...prev, ...data.results]);
-            } catch (error) {
-                console.error(error);
-            }
+        async function loadCharacters(page: number) {
+            let data = await GetCharacters(page);
+            setApiInfo({pages: data.info.pages, count: data.info.count});
+            setCharacters((prev) => [...prev, ...data.results]);
         }
 
-        if (page*9 > characters.length) {
-            const nextPage = loadedApiPages+1
-            if (apiInfo && nextPage > apiInfo.pages) return;
-            setLoadedApiPages(nextPage);
-            loadCharacters(nextPage);
-        }
+        if (apiInfo && currentApiPage > apiInfo.pages) return;
 
-    }, [page, loadedApiPages])
-
+        loadCharacters(currentApiPage);
+        const nextPage = currentApiPage+1;
+        setCurrentApiPage(nextPage);
+    }, [characters])
 
     return (
         <main className="flex-1">
@@ -83,7 +60,7 @@ function Explorar()
             <section className='bg-[#eaeaea] p-10'>
                 <div className='flex justify-between'>
                     <h3 className='text-[#0f172a] font-semibold text-xl pb-10'>Resultados</h3>
-                    <p className='text-[#758498]'>Mostrando {`${pageMin+1}-${page==totalPages ? apiInfo?.count : pageMax}`} de {apiInfo?.count} resultados</p>
+                    <p className='text-[#758498]'>Mostrando resultados</p>
                 </div>
                 <div className='flex flex-col items-center'>
                     <div className='grid grid-cols-3 gap-12'>
@@ -96,7 +73,6 @@ function Explorar()
                 </div>
 
                 <div className='mt-10 flex justify-center'>
-                    <Pagination paginationInfo={paginationInfo}/>
                 </div>
 
             </section>
