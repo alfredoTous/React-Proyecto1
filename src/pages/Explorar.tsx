@@ -12,7 +12,7 @@ import Pagination from '../components/Pagination';
 
 // la idea es mostrar un componente de cargando si se filtra mientras todavia no estan todos los personajes
 
-function Explorar()
+function Explorar({favoritos, setFavoritos} : {favoritos: Character[], setFavoritos: any})
 {
     const [searchParams, setSearchParams] = useSearchParams();
     const [characters, setCharacters] = useState<Character[]>([]);
@@ -68,21 +68,7 @@ function Explorar()
         totalPages        : totalPages,
         paginationButtons : paginationButtons
     }
-    
 
-    function loadFavoritos() : Character[] 
-    {
-        const data : string = localStorage.getItem('favoritos') || '[]';
-        return JSON.parse(data);
-    }
-
-    function saveToFavoritos(character: Character) {
-        const favoritos : Character[] = loadFavoritos();
-
-        favoritos.push(character);
-
-        localStorage.setItem('favoritos', JSON.stringify(favoritos));
-    }
 
     return (
         <main className="flex-1">
@@ -124,7 +110,7 @@ function Explorar()
                     <div className='grid grid-cols-3 gap-12'>
                         {(hasFilters ? filteredCharacters : characters).slice(pageMin, pageMax).map((c) => {
                                 return (
-                                    <Card key={c.id} character={c} />
+                                    <Card key={c.id} character={c} favoritos={favoritos} setFavoritos={setFavoritos}/>
                                 )
                             })
                         }

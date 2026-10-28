@@ -1,15 +1,19 @@
+import { toggleFavorito } from '../App';
 import type { Character } from '../types/character'
 
-import { toggleFromFavoritos } from '../pages/Favoritos'
 
-function Card({character}: {character: Character})
+function Card({character, favoritos, setFavoritos}: {character: Character, favoritos: Character[], setFavoritos: any})
 {
 
+    const isCharacterFavorite = favoritos && favoritos.find(c => c.id == character.id);
 
     return (
         <div className="flex flex-col justify-center w-100 bg-white rounded-2xl shadow-lg cursor-pointer transition duration-300 ease-in-out hover:scale-104 will-change-transform">
             <img className="w-120 h-50 object-cover rounded-t-2xl" src={character.image}/>
-            <button onClick={()=>toggleFromFavoritos(character)}>★</button>
+            <button onClick={() => toggleFavorito(character, favoritos, setFavoritos)}
+                    className={isCharacterFavorite ? 'text-[#f4b72a]' : ''}
+            >★
+            </button>
             <div className="p-6">
                 <h3 className="text-xl font-semibold text-[#0f1c3d]">{character.name}</h3>
                 <p className="text-[#8a92a2]">Estado: <span className="text-[#2a355c]">{character.status}</span></p>

@@ -1,45 +1,10 @@
-import { useEffect, useState } from "react";
 import type { Character } from "../types/character";
 import Card from "../components/Card";
 import { Link } from "react-router";
 
 
-export function loadFavoritos() : Character[] 
+function Favoritos({favoritos, setFavoritos} : {favoritos: Character[], setFavoritos: any})
 {
-    const data : string = localStorage.getItem('favoritos') || '[]';
-    return JSON.parse(data);
-}
-
-export function saveToFavoritos(character: Character) {
-    const favoritos : Character[] = loadFavoritos();
-
-    favoritos.push(character);
-
-    localStorage.setItem('favoritos', JSON.stringify(favoritos));
-}
-
-export function deleteFromFavoritos(character: Character) {
-    const favoritos : Character[] = loadFavoritos();
-    localStorage.setItem('favoritos', JSON.stringify(favoritos.filter(c => c.id != character.id)))
-}
-
-export function toggleFromFavoritos(character: Character) {
-    if (loadFavoritos().find(c => c.id == character.id) == undefined) {
-        saveToFavoritos(character);
-        return;
-    }
-    deleteFromFavoritos(character);
-}
-
-function Favoritos()
-{
-    const [favoritos, setFavoritos] = useState<Character[]>([]);
-
-    useEffect(() => {
-        setFavoritos(loadFavoritos());
-    }, [])
-
-
 
     return (
         <main className="p-15 flex-1 flex flex-col">
@@ -50,7 +15,7 @@ function Favoritos()
             <div className="flex flex-col items-center">
                 <section className={favoritos.length ? 'grid grid-cols-3 gap-12' : ''}>
                     {
-                        favoritos.length ? favoritos.map((c) => <Card key={c.id} character={c} />) 
+                        favoritos.length ? favoritos.map((c) => <Card key={c.id} character={c} favoritos={favoritos} setFavoritos={setFavoritos}/>) 
                                          : (
                             <div className="mt-20 flex flex-col items-center justify-center">
                                 <h2 className="p-7 text-[#c1cfdc] text-7xl">★</h2>
