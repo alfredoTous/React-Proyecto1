@@ -4,7 +4,8 @@ export type Character = {
     status   : string;
     species  : string;
     image    : string;
+    origin   : {name: string, url: string};
     location : {name: string, url: string};
     gender   : string;
-    episodes : number;
+    episode : string[];
 };

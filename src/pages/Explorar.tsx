@@ -10,7 +10,6 @@ import type { PaginationInfo } from '../types/paginationInfo.ts';
 
 import Pagination from '../components/Pagination';
 
-// la idea es mostrar un componente de cargando si se filtra mientras todavia no estan todos los personajes
 
 function Explorar({favoritos, setFavoritos} : {favoritos: Character[], setFavoritos: any})
 {

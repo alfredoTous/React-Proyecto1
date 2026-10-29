@@ -5,6 +5,7 @@ import Footer from "./components/Footer"
 import { Routes, Route } from 'react-router';
 import Explorar from "./pages/Explorar";
 import Favoritos from "./pages/Favoritos";  
+import Detalle from './pages/Detalle'
 
 import type { Character } from "./types/character";
 import { useState } from "react";
@@ -53,8 +54,9 @@ function App() {
 
             <Routes>
                 <Route path="/"          element={<Inicio/>}/>
-                <Route path="/explorar"  element={<Explorar  favoritos={favoritos} setFavoritos={setFavoritos}/>}/>
-                <Route path="/favoritos" element={<Favoritos favoritos={favoritos} setFavoritos={setFavoritos}/>}/>
+                <Route path="/explorar"  element={<Explorar   favoritos={favoritos} setFavoritos={setFavoritos}/>}/>
+                <Route path="/explorar/:id" element={<Detalle favoritos={favoritos} setFavoritos={setFavoritos}/>}/>
+                <Route path="/favoritos" element={<Favoritos  favoritos={favoritos} setFavoritos={setFavoritos}/>}/>
             </Routes>
 
             <Footer/>
