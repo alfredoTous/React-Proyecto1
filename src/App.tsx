@@ -10,6 +10,8 @@ import Detalle from './pages/Detalle'
 import type { Character } from "./types/character";
 import { useState } from "react";
 
+import { Toaster, toast } from 'react-hot-toast';
+
 
 // === Handle Favoritos ===
 function loadFavoritos() : Character[]
@@ -36,8 +38,10 @@ export function toggleFavorito(character: Character, favoritos: Character[], set
 
     if (isFavorite) {
         removeFromFavoritos(character);
+        toast.error(`${character.name} eliminado de favoritos`);
     } else {
         addToFavoritos(character);
+        toast.success(`${character.name} agregado a favoritos`);
     }
     setFavoritos(loadFavoritos());
 }
@@ -51,7 +55,7 @@ function App() {
     return (
         <main className="flex flex-col justify-between min-h-screen">
             <Header/>
-
+            <Toaster position="top-right" containerStyle={{ top: 90 }} />
             <Routes>
                 <Route path="/"          element={<Inicio/>}/>
                 <Route path="/explorar"  element={<Explorar   favoritos={favoritos} setFavoritos={setFavoritos}/>}/>
